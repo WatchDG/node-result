@@ -1,5 +1,6 @@
 {
   "name": "node-result",
+  "type": "module",
   "version": "1.0.1",
   "description": "result",
   "keywords": [
