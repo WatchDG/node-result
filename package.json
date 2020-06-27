@@ -2,7 +2,9 @@
   "name": "node-result",
   "version": "1.0.0",
   "description": "result",
-  "keywords": ["result"],
+  "keywords": [
+    "result"
+  ],
   "license": "MIT",
   "author": {
     "name": "Grigoriy Baranov",
@@ -12,16 +14,17 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "preversion" : "npm run linter",
-    "version" : "npm run formater",
-    "prepublishOnly" : "npm run linter",
-    "prepare" : "npm run build",
-    "build": "npx tsc",
-    "formater": "npx prettier --write 'src/**/*.ts'",
-    "linter": "npx tslint -p tsconfig.json 'src/**/*.ts'"
+    "formatter": "npx prettier --write \"src/**/*.ts\"",
+    "linter": "npx tslint -p tsconfig.json \"src/**/*.ts\"",
+    "preversion": "npm run linter",
+    "version": "npm run formatter",
+    "prepublishOnly": "npm run linter",
+    "prepare": "npm run build",
+    "build": "npx tsc"
   },
-  "files": ["build/**/*"],
-
+  "files": [
+    "lib/**/*"
+  ],
   "dependencies": {},
   "devDependencies": {
     "tslint": "^6.1.2",
