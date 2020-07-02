@@ -1,40 +1,37 @@
-type ResultError = Error;
-type ResultData = null | void | string | number | boolean | object | any[];
+type ErrorProcessing<Error, Data> = (error: Error) => Data;
+type ErrorProcessingAsync<Error, Data> = (error: Error) => Promise<Data>;
 
-type ErrorProcessing = (error: ResultError) => ResultData;
-type ErrorProcessingAsync = (error: ResultError) => Promise<ResultData>;
+export class Result<Error, Data> {
+    readonly #error: Error | null;
+    readonly #data: Data;
 
-export class Result {
-    readonly #error: ResultError | null;
-    readonly #data: ResultData;
-
-    constructor(error: ResultError | null = null, data: ResultData) {
+    constructor(error: Error | null = null, data: Data) {
         this.#error = error;
         this.#data = data;
     }
 
-    unwrap() {
+    unwrap(): Data {
         if (this.#error !== null) {
             throw this.#error;
         }
         return this.#data;
     }
 
-    unwrapAsync() {
+    unwrapAsync(): Promise<Data> {
         if (this.#error !== null) {
             return Promise.reject(this.#error);
         }
         return Promise.resolve(this.#data);
     }
 
-    onError(func: ErrorProcessing) {
+    onError(func: ErrorProcessing<Error, Data>): Data {
         if (this.#error !== null) {
             return func(this.#error);
         }
         return this.#data;
     }
 
-    async onErrorAsync(func: ErrorProcessingAsync) {
+    async onErrorAsync(func: ErrorProcessingAsync<Error, Data>): Promise<Data> {
         if (this.#error !== null) {
             return func(this.#error);
         }
@@ -42,6 +39,6 @@ export class Result {
     }
 }
 
-export const ResultOk = (data: ResultData) => new Result(null, data);
+export const ResultOk = <Data>(data: Data) => new Result(null, data);
 
-export const ResultFail = (error: ResultError) => new Result(error, void 0);
+export const ResultFail = <Error>(error: Error) => new Result(error, void 0);
