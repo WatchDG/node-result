@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": [
+      "es5",
+      "es6"
+    ],
+    "target": "es6",
     "declaration": true,
     "strict": true,
     "sourceMap": false,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "rootDir": "src",
     "outDir": "lib"
   },
