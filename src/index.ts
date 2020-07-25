@@ -1,6 +1,9 @@
 type ErrorProcessing<Error, Data> = (error: Error) => Data;
 type ErrorProcessingAsync<Error, Data> = (error: Error) => Promise<Data>;
 
+/**
+ * Result
+ */
 export class Result<Error, Data> {
   private readonly error: Error | null;
   private readonly data: Data;
@@ -39,6 +42,24 @@ export class Result<Error, Data> {
   }
 }
 
-export const ResultOk = <Data>(data: Data) => new Result(null, data);
+/**
+ * ResultOK
+ */
+export class ResultOK<Error, Data> extends Result<Error, Data> {
+  constructor(data: Data, error: Error) {
+    super(error, data);
+  }
+}
 
-export const ResultFail = <Error>(error: Error) => new Result(error, void 0);
+/**
+ * ResultFAIL
+ */
+export class ResultFAIL<Error, Data> extends Result<Error, Data> {
+  constructor(error: Error, data: Data) {
+    super(error, data);
+  }
+}
+
+export const ResultOk = <Data>(data: Data) => new ResultOK(data, null);
+
+export const ResultFail = <Error>(error: Error) => new ResultFAIL(error, void 0);
