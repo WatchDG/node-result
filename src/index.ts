@@ -45,21 +45,21 @@ export class Result<Error, Data> {
 /**
  * ResultOK
  */
-export class ResultOK<Error, Data> extends Result<Error, Data> {
-  constructor(data: Data, error: Error) {
-    super(error, data);
+export class ResultOK<Data> extends Result<null, Data> {
+  constructor(data: Data) {
+    super(null, data);
   }
 }
 
 /**
  * ResultFAIL
  */
-export class ResultFAIL<Error, Data> extends Result<Error, Data> {
-  constructor(error: Error, data: Data) {
-    super(error, data);
+export class ResultFAIL<Error> extends Result<Error, void> {
+  constructor(error: Error) {
+    super(error, void 0);
   }
 }
 
-export const ResultOk = <Data>(data: Data) => new ResultOK(data, null);
+export const ResultOk = <Data>(data: Data) => new ResultOK(data);
 
-export const ResultFail = <Error>(error: Error) => new ResultFAIL(error, void 0);
+export const ResultFail = <Error>(error: Error) => new ResultFAIL(error);
