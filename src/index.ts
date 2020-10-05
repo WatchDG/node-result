@@ -42,11 +42,11 @@ export class Result<Error, Data> {
   }
 
   isOk(): boolean {
-    return this.error !== null;
+    return this.error === null;
   }
 
   isFail(): boolean {
-    return this.error === null;
+    return this.error !== null;
   }
 }
 
