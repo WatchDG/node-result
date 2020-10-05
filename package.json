@@ -16,11 +16,11 @@
   "scripts": {
     "formatter": "npx prettier --write \"src/**/*.ts\"",
     "linter": "npx tslint -p tsconfig.json \"src/**/*.ts\"",
-    "preversion": "npm run linter",
-    "version": "npm run formatter",
-    "prepublishOnly": "npm run linter",
+    "preversion": "npm run build",
+    "version": "npm run build",
+    "prepublishOnly": "npm run build",
     "prepare": "npm run build",
-    "build": "npx tsc"
+    "build": "npm run formatter && npm run linter &&  npx tsc"
   },
   "files": [
     "lib/**/*"

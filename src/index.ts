@@ -40,6 +40,14 @@ export class Result<Error, Data> {
     }
     return Promise.resolve(this.data);
   }
+
+  isOk(): boolean {
+    return this.error !== null;
+  }
+
+  isFail(): boolean {
+    return this.error === null;
+  }
 }
 
 /**
