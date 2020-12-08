@@ -20,7 +20,7 @@
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "prepare": "npm run build",
-    "build": "npm run formatter && npm run linter &&  npx tsc"
+    "build": "npm run formatter && npm run linter && npx tsc"
   },
   "files": [
     "lib/**/*"

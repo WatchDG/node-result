@@ -62,7 +62,7 @@ export class ResultOK<Data> extends Result<null, Data> {
 /**
  * ResultFAIL
  */
-export class ResultFAIL<Error> extends Result<Error, void> {
+export class ResultFAIL<Error> extends Result<Error, undefined> {
   constructor(error: Error) {
     super(error, void 0);
   }
