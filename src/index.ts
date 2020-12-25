@@ -1,3 +1,5 @@
+export { ResultError } from 'node-result-error';
+
 type ErrorProcessing<Error, Data> = (error: Error) => Data;
 type ErrorProcessingAsync<Error, Data> = (error: Error) => Promise<Data>;
 
