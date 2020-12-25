@@ -26,7 +26,7 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "node-result-error": "^1.0.0"
+    "node-result-error": "^1.1.0"
   },
   "devDependencies": {
     "tslint": "^6.1.2",
