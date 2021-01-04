@@ -65,11 +65,15 @@ export const ResultOk = <Data>(data: Data) => new ResultOK(data);
 
 export const ResultFail = <Error>(error: Error) => new ResultFAIL(error);
 
-export function tryCatchWrapper(target: any, property: any, descriptor: { value: (...args: any[]) => any }) {
+export function tryCatchWrapper(
+  target: object,
+  property: string,
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => any>,
+) {
   const self = descriptor.value;
   descriptor.value = function (...args) {
     try {
-      return self.call(this, ...args);
+      return self!.call(this, ...args);
     } catch (error) {
       return ResultFail(error);
     }
@@ -78,14 +82,14 @@ export function tryCatchWrapper(target: any, property: any, descriptor: { value:
 }
 
 export function tryCatchWrapperAsync(
-  target: any,
-  property: any,
-  descriptor: { value: (...args: any[]) => Promise<any> },
+  target: object,
+  property: string,
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>,
 ) {
   const self = descriptor.value;
   descriptor.value = async function (...args) {
     try {
-      return await self.call(this, ...args);
+      return await self!.call(this, ...args);
     } catch (error) {
       return ResultFail(error);
     }
