@@ -14,9 +14,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "preversion": "npm run build",
-    "version": "npm run build",
-    "prepublishOnly": "npm run build",
+    "fmt": "npx prettier --write \"src/**/*.ts\"",
     "prepare": "npm run build",
     "build": "npx tsc"
   },
@@ -27,6 +25,7 @@
     "node-result-error": "^1.1.0"
   },
   "devDependencies": {
+    "prettier": "^2.2.1",
     "typescript": "^3.9.5"
   }
 }
