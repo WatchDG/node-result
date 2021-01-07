@@ -75,14 +75,14 @@ export class ResultFAIL<Error> extends Result<Error, undefined> {
  * @param data
  * @constructor
  */
-export const ResultOk = <Data>(data: Data) => new ResultOK(data);
+export const ResultOk = <Data>(data: Data): ResultOK<Data> => new ResultOK(data);
 
 /**
  * get a new instance of ResultFAIL
  * @param error
  * @constructor
  */
-export const ResultFail = <Error>(error: Error) => new ResultFAIL(error);
+export const ResultFail = <Error>(error: Error): ResultFAIL<Error> => new ResultFAIL(error);
 
 /**
  * `try catch` decorator for sync method
@@ -91,14 +91,14 @@ export const ResultFail = <Error>(error: Error) => new ResultFAIL(error);
  * @param descriptor
  */
 export function tryCatchWrapper(
-  target: object,
+  target: Record<any, any>,
   property: string,
   descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
-) {
+): TypedPropertyDescriptor<(...args: any[]) => ResultOK<any> | ResultFAIL<Error>> {
   const self = descriptor.value;
   descriptor.value = function (...args) {
     try {
-      return self!.call(this, ...args);
+      return self?.call(this, ...args);
     } catch (error) {
       return ResultFail(error);
     }
@@ -113,14 +113,14 @@ export function tryCatchWrapper(
  * @param descriptor
  */
 export function tryCatchWrapperAsync(
-  target: object,
+  target: Record<any, any>,
   property: string,
   descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
-) {
+): TypedPropertyDescriptor<(...args: any[]) => Promise<ResultOK<any> | ResultFAIL<Error>>> {
   const self = descriptor.value;
   descriptor.value = async function (...args) {
     try {
-      return await self!.call(this, ...args);
+      return await self?.call(this, ...args);
     } catch (error) {
       return ResultFail(error);
     }
