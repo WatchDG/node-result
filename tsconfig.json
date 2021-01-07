@@ -6,12 +6,11 @@
       "es5",
       "es6"
     ],
-    "target": "es6",
+    "target": "es2020",
     "declaration": true,
     "strict": true,
     "sourceMap": false,
     "removeComments": true,
-    "skipLibCheck": false,
     "rootDir": "src",
     "outDir": "lib"
   },

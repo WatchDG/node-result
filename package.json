@@ -14,13 +14,11 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "formatter": "npx prettier --write \"src/**/*.ts\"",
-    "linter": "npx tslint -p tsconfig.json \"src/**/*.ts\"",
     "preversion": "npm run build",
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "prepare": "npm run build",
-    "build": "npm run formatter && npm run linter && npx tsc"
+    "build": "npx tsc"
   },
   "files": [
     "lib/**/*"
@@ -29,8 +27,6 @@
     "node-result-error": "^1.1.0"
   },
   "devDependencies": {
-    "tslint": "^6.1.2",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.5"
   }
 }
