@@ -115,7 +115,7 @@ export function tryCatchWrapper(
  * @param descriptor
  */
 export function tryCatchWrapperAsync(
-  target: { [Key: string]: unknown },
+  target: Record<any, any>,
   property: string,
   descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
 ): TypedPropertyDescriptor<(...args: any[]) => Promise<ResultOK<any> | ResultFAIL<Error>>> {
