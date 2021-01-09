@@ -11,17 +11,21 @@
     "email": "baranov@w3m.co"
   },
   "repository": "github:WatchDG/node-result",
+  "private": false,
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "fmt": "npx prettier --write \"src/**/*.ts\"",
     "lint": "eslint --ext=ts src",
     "build": "npx tsc",
-    "prepare": "npm run lint && npm run build"
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "prepare": "npm run lint && npm run build",
+    "postpublish": "pinst --enable"
   },
-  "files": [
-    "lib/**/*"
-  ],
   "dependencies": {
     "node-result-error": "^1.1.0"
   },
@@ -30,6 +34,7 @@
     "@typescript-eslint/parser": "^4.12.0",
     "eslint": "^7.17.0",
     "husky": "^5.0.6",
+    "pinst": "^2.1.1",
     "prettier": "^2.2.1",
     "typescript": "^4.1.3"
   }
