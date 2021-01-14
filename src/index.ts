@@ -15,6 +15,20 @@ export class Result<E, D> {
     this.data = data;
   }
 
+  unwrap(): D {
+    if (this.error !== null) {
+      throw this.error;
+    }
+    return this.data;
+  }
+
+  unwrapAsync(): Promise<D | E> {
+    if (this.error !== null) {
+      return Promise.reject(this.error);
+    }
+    return Promise.resolve(this.data);
+  }
+
   onError(func: ErrorProcessing<E, D>): D {
     if (this.error !== null) {
       return func(this.error);
