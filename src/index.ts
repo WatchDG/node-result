@@ -3,6 +3,8 @@ export { ResultError } from 'node-result-error';
 type ErrorProcessing<E, D> = (error: E) => D;
 type ErrorProcessingAsync<E, D> = (error: E) => Promise<D>;
 
+export type ResultType<E, D> = ResultOK<E> | ResultFAIL<D>;
+
 /**
  * class Result
  */
@@ -112,7 +114,7 @@ export function tryCatchWrapper(
   descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
 ): TypedPropertyDescriptor<(...args: any[]) => ResultOK<any> | ResultFAIL<Error>> {
   const self = descriptor.value;
-  descriptor.value = function (...args) {
+  descriptor.value = function(...args) {
     try {
       return self?.call(this, ...args);
     } catch (error) {
@@ -134,7 +136,7 @@ export function tryCatchWrapperAsync(
   descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
 ): TypedPropertyDescriptor<(...args: any[]) => Promise<ResultOK<any> | ResultFAIL<Error>>> {
   const self = descriptor.value;
-  descriptor.value = async function (...args) {
+  descriptor.value = async function(...args) {
     try {
       return await self?.call(this, ...args);
     } catch (error) {
