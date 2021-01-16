@@ -17,7 +17,7 @@ export class Result<E, D> {
     this.data = data;
   }
 
-  unwrap(): D {
+  unwrap(): D | never {
     if (this.error !== null) {
       throw this.error;
     }
@@ -80,7 +80,7 @@ export class ResultFAIL<E> extends Result<E, undefined> {
   }
 
   unwrap(): never {
-    throw this.error;
+    throw super.error;
   }
 
   unwrapAsync(): Promise<E> {
@@ -114,7 +114,7 @@ export function tryCatchWrapper(
   descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
 ): TypedPropertyDescriptor<(...args: any[]) => ResultOK<any> | ResultFAIL<Error>> {
   const self = descriptor.value;
-  descriptor.value = function(...args) {
+  descriptor.value = function (...args) {
     try {
       return self?.call(this, ...args);
     } catch (error) {
@@ -136,7 +136,7 @@ export function tryCatchWrapperAsync(
   descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
 ): TypedPropertyDescriptor<(...args: any[]) => Promise<ResultOK<any> | ResultFAIL<Error>>> {
   const self = descriptor.value;
-  descriptor.value = async function(...args) {
+  descriptor.value = async function (...args) {
     try {
       return await self?.call(this, ...args);
     } catch (error) {
