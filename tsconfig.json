@@ -11,6 +11,7 @@
     "strict": true,
     "sourceMap": false,
     "removeComments": true,
+    "experimentalDecorators": true,
     "rootDir": "src",
     "outDir": "lib"
   },

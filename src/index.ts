@@ -1,18 +1,19 @@
 export { ResultError } from 'node-result-error';
 
-type ErrorProcessing<E, D> = (error: E) => D;
-type ErrorProcessingAsync<E, D> = (error: E) => Promise<D>;
+type ErrorProcessing<D, E> = (error: E) => D;
+type ErrorProcessingAsync<D, E> = (error: E) => Promise<D>;
 
-export type ResultType<E, D> = ResultOK<E> | ResultFAIL<D>;
+export type ReturningResult<D, E> = ResultOK<D> | ResultFAIL<E>;
+export type ReturningResultAsync<D, E> = Promise<ResultOK<D> | ResultFAIL<E>>;
 
 /**
  * class Result
  */
-export class Result<E, D> {
+export class Result<D, E> {
   protected readonly error: E | null;
   protected readonly data: D;
 
-  constructor(error: E | null = null, data: D) {
+  constructor(data: D, error: E | null = null) {
     this.error = error;
     this.data = data;
   }
@@ -31,14 +32,14 @@ export class Result<E, D> {
     return Promise.resolve(this.data);
   }
 
-  onError(func: ErrorProcessing<E, D>): D {
+  onError(func: ErrorProcessing<D, E>): D {
     if (this.error !== null) {
       return func(this.error);
     }
     return this.data;
   }
 
-  onErrorAsync(func: ErrorProcessingAsync<E, D>): Promise<D> {
+  onErrorAsync(func: ErrorProcessingAsync<D, E>): Promise<D> {
     if (this.error !== null) {
       return func(this.error);
     }
@@ -57,9 +58,9 @@ export class Result<E, D> {
 /**
  * class ResultOK
  */
-export class ResultOK<D> extends Result<null, D> {
+export class ResultOK<D> extends Result<D, null> {
   constructor(data: D) {
-    super(null, data);
+    super(data, null);
   }
 
   unwrap(): D {
@@ -74,9 +75,9 @@ export class ResultOK<D> extends Result<null, D> {
 /**
  * class ResultFAIL
  */
-export class ResultFAIL<E> extends Result<E, undefined> {
+export class ResultFAIL<E> extends Result<undefined, E> {
   constructor(error: E) {
-    super(error, void 0);
+    super(void 0, error);
   }
 
   unwrap(): never {
@@ -108,15 +109,19 @@ export const ResultFail = <E>(error: E): ResultFAIL<E> => new ResultFAIL(error);
  * @param property
  * @param descriptor
  */
-export function tryCatchWrapper(
-  target: Record<any, any>,
+export function tryCatchWrapper<C, D, E>(
+  target: C,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: any[]) => any>
-): TypedPropertyDescriptor<(...args: any[]) => ResultOK<any> | ResultFAIL<Error>> {
+  descriptor: TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>>
+): TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>> {
   const self = descriptor.value;
   descriptor.value = function (...args) {
     try {
-      return self?.call(this, ...args);
+      if (self instanceof Function) {
+        return self.call(this, ...args);
+      } else {
+        return ResultFail(new TypeError('Descriptor value is not a function.'));
+      }
     } catch (error) {
       return ResultFail(error);
     }
@@ -130,15 +135,19 @@ export function tryCatchWrapper(
  * @param property
  * @param descriptor
  */
-export function tryCatchWrapperAsync(
-  target: Record<any, any>,
+export function tryCatchWrapperAsync<C, D, E>(
+  target: C,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<any>>
-): TypedPropertyDescriptor<(...args: any[]) => Promise<ResultOK<any> | ResultFAIL<Error>>> {
+  descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>>
+): TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>> {
   const self = descriptor.value;
   descriptor.value = async function (...args) {
     try {
-      return await self?.call(this, ...args);
+      if (self instanceof Function) {
+        return self.call(this, ...args);
+      } else {
+        return ResultFail(new TypeError('Descriptor value is not a function.'));
+      }
     } catch (error) {
       return ResultFail(error);
     }
