@@ -38,7 +38,7 @@ export class Result<E, D> {
     return this.data;
   }
 
-  async onErrorAsync(func: ErrorProcessingAsync<E, D>): Promise<D> {
+  onErrorAsync(func: ErrorProcessingAsync<E, D>): Promise<D> {
     if (this.error !== null) {
       return func(this.error);
     }
