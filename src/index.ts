@@ -53,6 +53,13 @@ export class Result<D, E> {
   isFail(): boolean {
     return this.error !== null;
   }
+
+  isOkAndUnwrap(): [boolean, D | E] {
+    if (this.error === null) {
+      return [true, this.data];
+    }
+    return [false, this.error];
+  }
 }
 
 /**
