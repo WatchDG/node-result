@@ -30,20 +30,6 @@ export class Result<D, E> {
     this.atom = atom;
   }
 
-  unwrap(): D | never {
-    if (this.atom === AtomOK.OK) {
-      return this.data;
-    }
-    throw this.error;
-  }
-
-  unwrapAsync(): Promise<D | E> {
-    if (this.atom === AtomOK.OK) {
-      return Promise.resolve(this.data);
-    }
-    return Promise.reject(this.error);
-  }
-
   onError(func: ErrorProcessing<D, E>): D {
     if (this.atom === AtomOK.OK) {
       return this.data;
@@ -64,13 +50,6 @@ export class Result<D, E> {
 
   isFail(): boolean {
     return this.atom !== AtomOK.OK;
-  }
-
-  isOkAndUnwrap(): [AtomOK, D] | [AtomFAIL, E] {
-    if (this.atom === AtomOK.OK) {
-      return [AtomOK.OK, this.data];
-    }
-    return [AtomFAIL.FAIL, this.error];
   }
 }
 
