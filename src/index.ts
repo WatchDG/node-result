@@ -1,5 +1,15 @@
 export { ResultError } from 'node-result-error';
 
+export enum AtomOK {
+  OK = 'OK'
+}
+
+export enum AtomFAIL {
+  FAIL = 'FAIL'
+}
+
+type Atom = typeof AtomOK.OK | typeof AtomFAIL.FAIL;
+
 type ErrorProcessing<D, E> = (error: E) => D;
 type ErrorProcessingAsync<D, E> = (error: E) => Promise<D>;
 
@@ -10,64 +20,66 @@ export type ReturningResultAsync<D, E> = Promise<ResultOK<D> | ResultFAIL<E>>;
  * class Result
  */
 export class Result<D, E> {
-  protected readonly error: E | null;
   protected readonly data: D;
+  protected readonly error: E;
+  protected readonly atom: Atom;
 
-  constructor(data: D, error: E | null = null) {
-    this.error = error;
+  constructor(data: D, error: E, atom: Atom = AtomOK.OK) {
     this.data = data;
+    this.error = error;
+    this.atom = atom;
   }
 
   unwrap(): D | never {
-    if (this.error !== null) {
-      throw this.error;
+    if (this.atom === AtomOK.OK) {
+      return this.data;
     }
-    return this.data;
+    throw this.error;
   }
 
   unwrapAsync(): Promise<D | E> {
-    if (this.error !== null) {
-      return Promise.reject(this.error);
+    if (this.atom === AtomOK.OK) {
+      return Promise.resolve(this.data);
     }
-    return Promise.resolve(this.data);
+    return Promise.reject(this.error);
   }
 
   onError(func: ErrorProcessing<D, E>): D {
-    if (this.error !== null) {
-      return func(this.error);
+    if (this.atom === AtomOK.OK) {
+      return this.data;
     }
-    return this.data;
+    return func(this.error);
   }
 
   onErrorAsync(func: ErrorProcessingAsync<D, E>): Promise<D> {
-    if (this.error !== null) {
-      return func(this.error);
+    if (this.atom === AtomOK.OK) {
+      return Promise.resolve(this.data);
     }
-    return Promise.resolve(this.data);
+    return func(this.error);
   }
 
   isOk(): boolean {
-    return this.error === null;
+    return this.atom === AtomOK.OK;
   }
 
   isFail(): boolean {
-    return this.error !== null;
+    return this.atom !== AtomOK.OK;
   }
 
-  isOkAndUnwrap(): [boolean, D | E] {
-    if (this.error === null) {
-      return [true, this.data];
+  isOkAndUnwrap(): [AtomOK, D] | [AtomFAIL, E] {
+    if (this.atom === AtomOK.OK) {
+      return [AtomOK.OK, this.data];
     }
-    return [false, this.error];
+    return [AtomFAIL.FAIL, this.error];
   }
 }
 
 /**
  * class ResultOK
  */
-export class ResultOK<D> extends Result<D, null> {
+export class ResultOK<D> extends Result<D, undefined> {
   constructor(data: D) {
-    super(data, null);
+    super(data, void 0, AtomOK.OK);
   }
 
   unwrap(): D {
@@ -84,11 +96,11 @@ export class ResultOK<D> extends Result<D, null> {
  */
 export class ResultFAIL<E> extends Result<undefined, E> {
   constructor(error: E) {
-    super(void 0, error);
+    super(void 0, error, AtomFAIL.FAIL);
   }
 
   unwrap(): never {
-    throw super.error;
+    throw this.error;
   }
 
   unwrapAsync(): Promise<E> {
