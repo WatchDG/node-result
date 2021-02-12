@@ -142,7 +142,7 @@ export function tryCatchWrapper<C, D, E>(
   descriptor: TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>>
 ): TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>> {
   const self = descriptor.value;
-  descriptor.value = function(...args) {
+  descriptor.value = function (...args) {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
@@ -168,7 +168,7 @@ export function tryCatchWrapperAsync<C, D, E>(
   descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>>
 ): TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>> {
   const self = descriptor.value;
-  descriptor.value = async function(...args) {
+  descriptor.value = async function (...args) {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
