@@ -10,8 +10,8 @@ export enum AtomFAIL {
 
 type Atom = typeof AtomOK.OK | typeof AtomFAIL.FAIL;
 
-type ErrorProcessing<D, E> = (error: E) => D;
-type ErrorProcessingAsync<D, E> = (error: E) => Promise<D>;
+export type ErrorProcessing<D, E> = (error: E) => D;
+export type ErrorProcessingAsync<D, E> = (error: E) => Promise<D>;
 
 export type ReturningResult<D, E> = ResultOK<D> | ResultFAIL<E>;
 export type ReturningResultAsync<D, E> = Promise<ResultOK<D> | ResultFAIL<E>>;
@@ -68,10 +68,6 @@ export class ResultOK<D> extends Result<D, undefined> {
   unwrapAsync(): Promise<D> {
     return Promise.resolve(this.data);
   }
-
-  isOkAndUnwrap(): [AtomOK, D] {
-    return [AtomOK.OK, this.data];
-  }
 }
 
 /**
@@ -88,10 +84,6 @@ export class ResultFAIL<E> extends Result<undefined, E> {
 
   unwrapAsync(): Promise<E> {
     return Promise.reject(this.error);
-  }
-
-  isOkAndUnwrap(): [AtomFAIL, E] {
-    return [AtomFAIL.FAIL, this.error];
   }
 }
 
@@ -121,7 +113,7 @@ export function tryCatchWrapper<C, D, E>(
   descriptor: TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>>
 ): TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>> {
   const self = descriptor.value;
-  descriptor.value = function (...args) {
+  descriptor.value = function(...args) {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
@@ -147,7 +139,7 @@ export function tryCatchWrapperAsync<C, D, E>(
   descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>>
 ): TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>> {
   const self = descriptor.value;
-  descriptor.value = async function (...args) {
+  descriptor.value = async function(...args) {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
