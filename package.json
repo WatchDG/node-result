@@ -28,7 +28,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "node-result-error": "^1.1.0"
+    "node-result-error": "^1.2.0"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

@@ -1,4 +1,4 @@
-export { ResultError } from 'node-result-error';
+export { ResultError, resultError } from 'node-result-error';
 
 export enum AtomOK {
   OK = 'OK'
