@@ -2,14 +2,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": [
-      "es6"
-    ],
     "target": "es2019",
     "declaration": true,
     "strict": true,
     "sourceMap": false,
-    "removeComments": true,
     "experimentalDecorators": true,
     "rootDir": "src",
     "outDir": "lib"

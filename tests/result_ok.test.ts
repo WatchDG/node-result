@@ -1,4 +1,4 @@
-import { ResultOK, ResultOk } from '../src';
+import { ResultOK, ok } from '../src';
 
 test('create new ResultOK', () => {
   new ResultOK(void 0);
@@ -25,5 +25,5 @@ test('check isFail', () => {
 });
 
 test('call ResultOk', () => {
-  ResultOk(void 0);
+  ok(void 0);
 });

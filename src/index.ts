@@ -1,153 +1,131 @@
 export { ResultError, resultError } from 'node-result-error';
 
-export enum AtomOK {
-  OK = 'OK'
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace types {
+  export type Result<DataType, ErrorType> = ResultOK<DataType> | ResultFAIL<ErrorType>;
+  export type ResultAsync<DataType, ErrorType> = Promise<Result<DataType, ErrorType>>;
 }
 
-export enum AtomFAIL {
-  FAIL = 'FAIL'
-}
+export type ErrorProcessing<DataType, ErrorType> = (error: ErrorType) => DataType;
+export type ErrorProcessingAsync<DataType, ErrorType> = (error: ErrorType) => Promise<DataType>;
 
-type Atom = typeof AtomOK.OK | typeof AtomFAIL.FAIL;
+export class Result<DataType, ErrorType> {
+  protected readonly data: DataType;
+  protected readonly error: ErrorType;
 
-export type ErrorProcessing<D, E> = (error: E) => D;
-export type ErrorProcessingAsync<D, E> = (error: E) => Promise<D>;
-
-export type ReturningResult<D, E> = ResultOK<D> | ResultFAIL<E>;
-export type ReturningResultAsync<D, E> = Promise<ResultOK<D> | ResultFAIL<E>>;
-
-/**
- * class Result
- */
-export class Result<D, E> {
-  protected readonly data: D;
-  protected readonly error: E;
-  protected readonly atom: Atom;
-
-  constructor(data: D, error: E, atom: Atom = AtomOK.OK) {
+  constructor(data: DataType, error: ErrorType) {
     this.data = data;
     this.error = error;
-    this.atom = atom;
   }
 
-  onError(func: ErrorProcessing<D, E>): D {
-    if (this.atom === AtomOK.OK) {
-      return this.data;
-    }
-    return func(this.error);
-  }
-
-  onErrorAsync(func: ErrorProcessingAsync<D, E>): Promise<D> {
-    if (this.atom === AtomOK.OK) {
-      return Promise.resolve(this.data);
-    }
-    return func(this.error);
-  }
-
-  isOk(): boolean {
-    return this.atom === AtomOK.OK;
-  }
-
-  isFail(): boolean {
-    return this.atom !== AtomOK.OK;
-  }
+  // onErrorAsync(func: ErrorProcessingAsync<D, E>): Promise<D> {
+  //   if (this.atom === AtomOK.OK) {
+  //     return Promise.resolve(this.data);
+  //   }
+  //   return func(this.error);
+  // }
 }
 
-/**
- * class ResultOK
- */
-export class ResultOK<D> extends Result<D, undefined> {
-  constructor(data: D) {
-    super(data, void 0, AtomOK.OK);
+export class ResultOK<DataType> extends Result<DataType, undefined> {
+  constructor(data: DataType) {
+    super(data, void 0);
   }
 
-  unwrap(): D {
+  unwrap(): DataType {
     return this.data;
   }
 
-  unwrapAsync(): Promise<D> {
+  unwrapAsync(): Promise<DataType> {
+    return Promise.resolve(this.data);
+  }
+
+  isOk(): boolean {
+    return true;
+  }
+
+  isFail(): boolean {
+    return false;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onError(func: ErrorProcessing<DataType, never>): DataType {
+    return this.data;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onErrorAsync(func: ErrorProcessingAsync<DataType, never>): Promise<DataType> {
     return Promise.resolve(this.data);
   }
 }
 
-/**
- * class ResultFAIL
- */
-export class ResultFAIL<E> extends Result<undefined, E> {
-  constructor(error: E) {
-    super(void 0, error, AtomFAIL.FAIL);
+export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
+  constructor(error: ErrorType) {
+    super(void 0, error);
   }
 
   unwrap(): never {
     throw this.error;
   }
 
-  unwrapAsync(): Promise<E> {
+  unwrapAsync(): Promise<ErrorType> {
     return Promise.reject(this.error);
+  }
+
+  isOk(): boolean {
+    return false;
+  }
+
+  isFail(): boolean {
+    return true;
+  }
+
+  onError<DataType>(func: ErrorProcessing<never, ErrorType>): DataType {
+    return func(this.error);
+  }
+
+  onErrorAsync<DataType>(func: ErrorProcessingAsync<never, ErrorType>): Promise<DataType> {
+    return func(this.error);
   }
 }
 
-/**
- * get a new instance of ResultOK
- * @param data
- * @constructor
- */
-export const ResultOk = <D>(data: D): ResultOK<D> => new ResultOK(data);
+export const ok = <DataType>(data: DataType): ResultOK<DataType> => new ResultOK(data);
+export const fail = <ErrorType>(error: ErrorType): ResultFAIL<ErrorType> => new ResultFAIL(error);
 
-/**
- * get a new instance of ResultFAIL
- * @param error
- * @constructor
- */
-export const ResultFail = <E>(error: E): ResultFAIL<E> => new ResultFAIL(error);
-
-/**
- * `try catch` decorator for sync method
- * @param target
- * @param property
- * @param descriptor
- */
-export function tryCatchWrapper<C, D, E>(
+export function tryCatch<C, D, E>(
   target: C,
   property: string,
   descriptor: TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>>
 ): TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>> {
   const self = descriptor.value;
-  descriptor.value = function (...args) {
+  descriptor.value = function(...args) {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
       } else {
-        return ResultFail(new TypeError('Descriptor value is not a function.'));
+        return fail(new TypeError('Descriptor value is not a function.'));
       }
     } catch (error) {
-      return ResultFail(error);
+      return fail(error);
     }
   };
   return descriptor;
 }
 
-/**
- * `try catch` decorator for async method
- * @param target
- * @param property
- * @param descriptor
- */
-export function tryCatchWrapperAsync<C, D, E>(
+export function tryCatchAsync<C, D, E>(
   target: C,
   property: string,
   descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>>
 ): TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>> {
   const self = descriptor.value;
-  descriptor.value = async function (...args) {
+  descriptor.value = async function(...args) {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
       } else {
-        return ResultFail(new TypeError('Descriptor value is not a function.'));
+        return fail(new TypeError('Descriptor value is not a function.'));
       }
     } catch (error) {
-      return ResultFail(error);
+      return fail(error);
     }
   };
   return descriptor;

@@ -1,42 +1,45 @@
 import {
-  tryCatchWrapper,
-  tryCatchWrapperAsync,
-  ResultOk,
-  ResultFail,
-  ReturningResult,
-  ReturningResultAsync,
+  tryCatch,
+  tryCatchAsync,
+  ok,
+  fail,
   ResultOK,
   ResultFAIL
 } from '../src';
+import type {
+  types
+} from '../src';
+type Result<DataType, ErrorType> = types.Result<DataType, ErrorType>;
+type ResultAsync<DataType, ErrorType> = types.ResultAsync<DataType, ErrorType>;
 
 class TryCatchTest {
-  @tryCatchWrapper
-  getOk(): ReturningResult<string, Error> {
-    return ResultOk('foo');
+  @tryCatch
+  getOk(): Result<string, Error> {
+    return ok('foo');
   }
 
-  @tryCatchWrapperAsync
-  async getOkAsync(): ReturningResultAsync<string, Error> {
-    return ResultOk('foo');
+  @tryCatchAsync
+  async getOkAsync(): ResultAsync<string, Error> {
+    return ok('foo');
   }
 
-  @tryCatchWrapper
-  getFail(): ReturningResult<string, Error> {
-    return ResultFail(new Error('bar'));
+  @tryCatch
+  getFail(): Result<string, Error> {
+    return fail(new Error('bar'));
   }
 
-  @tryCatchWrapperAsync
-  async getFailAsync(): ReturningResultAsync<string, Error> {
-    return ResultFail(new Error('bar'));
+  @tryCatchAsync
+  async getFailAsync(): ResultAsync<string, Error> {
+    return fail(new Error('bar'));
   }
   
-  @tryCatchWrapper
-  throwError(): ReturningResult<string, Error>{
+  @tryCatch
+  throwError(): Result<string, Error>{
     throw new Error('bar');
   }
 
-  @tryCatchWrapper
-  throwErrorAsync(): ReturningResult<string, Error>{
+  @tryCatch
+  throwErrorAsync(): Result<string, Error>{
     throw new Error('bar');
   }
 }
