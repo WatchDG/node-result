@@ -17,13 +17,6 @@ export class Result<DataType, ErrorType> {
     this.data = data;
     this.error = error;
   }
-
-  // onErrorAsync(func: ErrorProcessingAsync<D, E>): Promise<D> {
-  //   if (this.atom === AtomOK.OK) {
-  //     return Promise.resolve(this.data);
-  //   }
-  //   return func(this.error);
-  // }
 }
 
 export class ResultOK<DataType> extends Result<DataType, undefined> {
@@ -91,11 +84,11 @@ export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
 export const ok = <DataType>(data: DataType): ResultOK<DataType> => new ResultOK(data);
 export const fail = <ErrorType>(error: ErrorType): ResultFAIL<ErrorType> => new ResultFAIL(error);
 
-export function tryCatch<C, D, E>(
-  target: C,
+export function tryCatch<TargetType, DataType, ErrorType>(
+  target: TargetType,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>>
-): TypedPropertyDescriptor<(...args: never[]) => D | ResultFAIL<E>> {
+  descriptor: TypedPropertyDescriptor<(...args: never[]) => DataType | ResultFAIL<ErrorType>>
+): TypedPropertyDescriptor<(...args: never[]) => DataType | ResultFAIL<ErrorType>> {
   const self = descriptor.value;
   descriptor.value = function (...args) {
     try {
@@ -111,11 +104,11 @@ export function tryCatch<C, D, E>(
   return descriptor;
 }
 
-export function tryCatchAsync<C, D, E>(
-  target: C,
+export function tryCatchAsync<TargetType, DataType, ErrorType>(
+  target: TargetType,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>>
-): TypedPropertyDescriptor<(...args: never[]) => Promise<D | ResultFAIL<E>>> {
+  descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<DataType | ResultFAIL<ErrorType>>>
+): TypedPropertyDescriptor<(...args: never[]) => Promise<DataType | ResultFAIL<ErrorType>>> {
   const self = descriptor.value;
   descriptor.value = async function (...args) {
     try {
