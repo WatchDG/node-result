@@ -1,13 +1,8 @@
-export { ResultError, resultError } from 'node-result-error';
+export type TResult<DataType, ErrorType> = ResultOK<DataType> | ResultFAIL<ErrorType>;
+export type TResultAsync<DataType, ErrorType> = Promise<TResult<DataType, ErrorType>>;
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace types {
-  export type Result<DataType, ErrorType> = ResultOK<DataType> | ResultFAIL<ErrorType>;
-  export type ResultAsync<DataType, ErrorType> = Promise<Result<DataType, ErrorType>>;
-}
-
-export type ErrorProcessing<DataType, ErrorType> = (error: ErrorType) => DataType;
-export type ErrorProcessingAsync<DataType, ErrorType> = (error: ErrorType) => Promise<DataType>;
+export type TErrorProcessing<DataType, ErrorType> = (error: ErrorType) => DataType;
+export type TErrorProcessingAsync<DataType, ErrorType> = (error: ErrorType) => Promise<DataType>;
 
 export class Result<DataType, ErrorType> {
   protected readonly data: DataType;
@@ -41,12 +36,12 @@ export class ResultOK<DataType> extends Result<DataType, undefined> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onError(func: ErrorProcessing<DataType, never>): DataType {
+  onError(func: TErrorProcessing<DataType, never>): DataType {
     return this.data;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onErrorAsync(func: ErrorProcessingAsync<DataType, never>): Promise<DataType> {
+  onErrorAsync(func: TErrorProcessingAsync<DataType, never>): Promise<DataType> {
     return Promise.resolve(this.data);
   }
 }
@@ -72,11 +67,11 @@ export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
     return true;
   }
 
-  onError<DataType>(func: ErrorProcessing<never, ErrorType>): DataType {
+  onError<DataType>(func: TErrorProcessing<never, ErrorType>): DataType {
     return func(this.error);
   }
 
-  onErrorAsync<DataType>(func: ErrorProcessingAsync<never, ErrorType>): Promise<DataType> {
+  onErrorAsync<DataType>(func: TErrorProcessingAsync<never, ErrorType>): Promise<DataType> {
     return func(this.error);
   }
 }

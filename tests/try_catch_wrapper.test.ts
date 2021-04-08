@@ -7,39 +7,38 @@ import {
   ResultFAIL
 } from '../src';
 import type {
-  types
+  TResult,
+  TResultAsync
 } from '../src';
-type Result<DataType, ErrorType> = types.Result<DataType, ErrorType>;
-type ResultAsync<DataType, ErrorType> = types.ResultAsync<DataType, ErrorType>;
 
 class TryCatchTest {
   @tryCatch
-  getOk(): Result<string, Error> {
+  getOk(): TResult<string, Error> {
     return ok('foo');
   }
 
   @tryCatchAsync
-  async getOkAsync(): ResultAsync<string, Error> {
+  async getOkAsync(): TResultAsync<string, Error> {
     return ok('foo');
   }
 
   @tryCatch
-  getFail(): Result<string, Error> {
+  getFail(): TResult<string, Error> {
     return fail(new Error('bar'));
   }
 
   @tryCatchAsync
-  async getFailAsync(): ResultAsync<string, Error> {
+  async getFailAsync(): TResultAsync<string, Error> {
     return fail(new Error('bar'));
   }
   
   @tryCatch
-  throwError(): Result<string, Error>{
+  throwError(): TResult<string, Error>{
     throw new Error('bar');
   }
 
   @tryCatch
-  throwErrorAsync(): Result<string, Error>{
+  throwErrorAsync(): TResult<string, Error>{
     throw new Error('bar');
   }
 }

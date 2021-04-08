@@ -27,9 +27,7 @@
     "prepare": "npm run lint && npm run build && npm run test",
     "postpublish": "pinst --enable"
   },
-  "dependencies": {
-    "node-result-error": "^1.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
