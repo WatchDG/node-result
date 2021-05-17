@@ -82,8 +82,8 @@ export const fail = <ErrorType>(error: ErrorType): ResultFAIL<ErrorType> => new 
 export function tryCatch<TargetType, DataType, ErrorType>(
   target: TargetType,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: never[]) => DataType | ResultFAIL<ErrorType>>
-): TypedPropertyDescriptor<(...args: never[]) => DataType | ResultFAIL<ErrorType>> {
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => DataType | ResultFAIL<ErrorType>>
+): TypedPropertyDescriptor<(...args: any[]) => DataType | ResultFAIL<ErrorType>> {
   const self = descriptor.value;
   descriptor.value = function (...args) {
     try {
@@ -102,8 +102,8 @@ export function tryCatch<TargetType, DataType, ErrorType>(
 export function tryCatchAsync<TargetType, DataType, ErrorType>(
   target: TargetType,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: never[]) => Promise<DataType | ResultFAIL<ErrorType>>>
-): TypedPropertyDescriptor<(...args: never[]) => Promise<DataType | ResultFAIL<ErrorType>>> {
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | ResultFAIL<ErrorType>>>
+): TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | ResultFAIL<ErrorType>>> {
   const self = descriptor.value;
   descriptor.value = async function (...args) {
     try {
