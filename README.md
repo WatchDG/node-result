@@ -25,16 +25,12 @@ async function checker(data: any) {
 }
 
 (async () => {
+  (await checker('foo'));           // return Result
+  (await checker(5));               // return Result
+  (await checker('bar'));           // return Result
 
-  (await checker('foo')); // return Result
-  (await checker(5));     // return Result
-  (await checker('bar')); // return Result
-
-  (await checker('foo')).unwrap();
-  // return null
-  (await checker(5)).unwrap();
-  // throw undefined or Error
-  (await checker('bar')).unwrap();
-  // not done
+  (await checker('foo')).unwrap();  // return null
+  (await checker(5)).unwrap();      // throw undefined
+  (await checker('bar')).unwrap();  // not done
 })();
 ```
