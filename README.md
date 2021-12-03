@@ -13,7 +13,7 @@ yarn add node-result
 ```ts
 import { ok, fail } from "node-result";
 
-async function checkIfNotString(data: any) {
+async function checker(data: any) {
   try {
     if (typeof data !== 'string') {
       return fail(void 0);
@@ -26,19 +26,15 @@ async function checkIfNotString(data: any) {
 
 (async () => {
 
-  (await checkIfNotString('foo'));
-  // return Result
-  (await checkIfNotString(5));
-  // return Result
-  (await checkIfNotString('bar'));
-  // return Result
+  (await checker('foo')); // return Result
+  (await checker(5));     // return Result
+  (await checker('bar')); // return Result
 
-  (await checkIfNotString('foo')).unwrap();
+  (await checker('foo')).unwrap();
   // return null
-  (await checkIfNotString(5)).unwrap();
+  (await checker(5)).unwrap();
   // throw undefined or Error
-  (await checkIfNotString('bar')).unwrap();
+  (await checker('bar')).unwrap();
   // not done
-
 })();
 ```

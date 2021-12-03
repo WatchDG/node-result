@@ -24,6 +24,6 @@ test('check isFail', () => {
   expect(result.isFail()).toBeFalsy();
 });
 
-test('call ResultOk', () => {
+test('call ok', () => {
   ok(void 0);
 });

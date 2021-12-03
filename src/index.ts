@@ -85,7 +85,8 @@ export function tryCatch<TargetType, DataType, ErrorType>(
   descriptor: TypedPropertyDescriptor<(...args: any[]) => DataType | ResultFAIL<ErrorType>>
 ): TypedPropertyDescriptor<(...args: any[]) => DataType | ResultFAIL<ErrorType>> {
   const self = descriptor.value;
-  descriptor.value = function (...args) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  descriptor.value = function (...args): DataType | ResultFAIL<any> {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);
@@ -105,7 +106,8 @@ export function tryCatchAsync<TargetType, DataType, ErrorType>(
   descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | ResultFAIL<ErrorType>>>
 ): TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | ResultFAIL<ErrorType>>> {
   const self = descriptor.value;
-  descriptor.value = async function (...args) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  descriptor.value = async function (...args): Promise<DataType | ResultFAIL<any>> {
     try {
       if (self instanceof Function) {
         return self.call(this, ...args);

@@ -1,6 +1,6 @@
 {
   "name": "node-result",
-  "version": "12.0.2",
+  "version": "12.0.3",
   "description": "result",
   "keywords": [
     "result"
@@ -20,23 +20,19 @@
     "fmt": "npx prettier --write \"src/**/*.ts\"",
     "lint": "npx eslint --ext=ts src",
     "test": "npx jest",
-    "build": "npx tsc",
-    "prepare": "npm run build",
-    "postinstall": "husky install",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable"
+    "build": "npx tsc -p tsconfig.json",
+    "prepare": "husky install && npm run build"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
-    "eslint": "^7.27.0",
-    "husky": "^6.0.0",
-    "jest": "^27.0.1",
-    "pinst": "^2.1.1",
-    "prettier": "^2.3.0",
-    "ts-jest": "^27.0.1",
-    "typescript": "^4.3.2"
+    "@types/jest": "=27.0.3",
+    "@typescript-eslint/eslint-plugin": "=5.5.0",
+    "@typescript-eslint/parser": "=5.5.0",
+    "eslint": "=8.3.0",
+    "husky": "=7.0.4",
+    "jest": "=27.4.3",
+    "prettier": "=2.5.0",
+    "ts-jest": "=27.0.7",
+    "typescript": "=4.5.2"
   },
   "jest": {
     "preset": "ts-jest",

@@ -27,6 +27,6 @@ test('check isFail', () => {
   expect(result.isFail()).toBeTruthy();
 });
 
-test('call ResultFail', () => {
+test('call fail', () => {
   fail(void 0);
 });
