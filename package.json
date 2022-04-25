@@ -24,15 +24,15 @@
     "prepare": "husky install && npm run build"
   },
   "devDependencies": {
-    "@types/jest": "=27.0.3",
-    "@typescript-eslint/eslint-plugin": "=5.5.0",
-    "@typescript-eslint/parser": "=5.5.0",
-    "eslint": "=8.3.0",
-    "husky": "=7.0.4",
-    "jest": "=27.4.3",
-    "prettier": "=2.5.0",
-    "ts-jest": "=27.0.7",
-    "typescript": "=4.5.2"
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "eslint": "^8.14.0",
+    "husky": "^7.0.4",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.2",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
   },
   "jest": {
     "preset": "ts-jest",

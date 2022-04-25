@@ -16,7 +16,7 @@ export class Result<DataType, ErrorType> {
 
 export class ResultOK<DataType> extends Result<DataType, undefined> {
   constructor(data: DataType) {
-    super(data, void 0);
+    super(data, undefined);
   }
 
   unwrap(): DataType {
@@ -48,7 +48,7 @@ export class ResultOK<DataType> extends Result<DataType, undefined> {
 
 export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
   constructor(error: ErrorType) {
-    super(void 0, error);
+    super(undefined, error);
   }
 
   unwrap(): never {
@@ -76,8 +76,13 @@ export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
   }
 }
 
-export const ok = <DataType>(data: DataType): ResultOK<DataType> => new ResultOK(data);
-export const fail = <ErrorType>(error: ErrorType): ResultFAIL<ErrorType> => new ResultFAIL(error);
+export function ok<DataType>(data: DataType): ResultOK<DataType> {
+  return new ResultOK(data);
+}
+
+export function fail<ErrorType>(error: ErrorType): ResultFAIL<ErrorType> {
+  return new ResultFAIL(error);
+}
 
 export function tryCatch<TargetType, DataType, ErrorType>(
   target: TargetType,
