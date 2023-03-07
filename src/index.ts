@@ -1,4 +1,4 @@
-export type TResult<DataType, ErrorType> = ResultOK<DataType> | ResultFAIL<ErrorType>;
+export type TResult<DataType, ErrorType> = Ok<DataType> | Err<ErrorType>;
 export type TResultAsync<DataType, ErrorType> = Promise<TResult<DataType, ErrorType>>;
 
 export type TErrorProcessing<DataType, ErrorType> = (error: ErrorType) => DataType;
@@ -14,9 +14,9 @@ export class Result<DataType, ErrorType> {
   }
 }
 
-export class ResultOK<DataType> extends Result<DataType, undefined> {
+export class Ok<DataType> extends Result<DataType, null> {
   constructor(data: DataType) {
-    super(data, undefined);
+    super(data, null);
   }
 
   unwrap(): DataType {
@@ -31,7 +31,7 @@ export class ResultOK<DataType> extends Result<DataType, undefined> {
     return true;
   }
 
-  isFail(): boolean {
+  isErr(): boolean {
     return false;
   }
 
@@ -46,9 +46,9 @@ export class ResultOK<DataType> extends Result<DataType, undefined> {
   }
 }
 
-export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
+export class Err<ErrorType> extends Result<null, ErrorType> {
   constructor(error: ErrorType) {
-    super(undefined, error);
+    super(null, error);
   }
 
   unwrap(): never {
@@ -63,7 +63,7 @@ export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
     return false;
   }
 
-  isFail(): boolean {
+  isErr(): boolean {
     return true;
   }
 
@@ -76,30 +76,30 @@ export class ResultFAIL<ErrorType> extends Result<undefined, ErrorType> {
   }
 }
 
-export function ok<DataType>(data: DataType): ResultOK<DataType> {
-  return new ResultOK(data);
+export function ok<DataType>(data: DataType): Ok<DataType> {
+  return new Ok(data);
 }
 
-export function fail<ErrorType>(error: ErrorType): ResultFAIL<ErrorType> {
-  return new ResultFAIL(error);
+export function err<ErrorType>(error: ErrorType): Err<ErrorType> {
+  return new Err(error);
 }
 
 export function tryCatch<TargetType, DataType, ErrorType>(
   target: TargetType,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: any[]) => DataType | ResultFAIL<ErrorType>>
-): TypedPropertyDescriptor<(...args: any[]) => DataType | ResultFAIL<ErrorType>> {
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => DataType | Err<ErrorType>>
+): TypedPropertyDescriptor<(...args: any[]) => DataType | Err<ErrorType>> {
   const self = descriptor.value;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  descriptor.value = function (...args): DataType | ResultFAIL<any> {
+  descriptor.value = function(...args): DataType | Err<any> {
     try {
       if (self instanceof Function) {
-        return self.call(this, ...args);
+        return self.apply(this, args);
       } else {
-        return fail(new TypeError('Descriptor value is not a function.'));
+        return err(new TypeError('Descriptor value is not a function.'));
       }
     } catch (error) {
-      return fail(error);
+      return err(error);
     }
   };
   return descriptor;
@@ -108,19 +108,19 @@ export function tryCatch<TargetType, DataType, ErrorType>(
 export function tryCatchAsync<TargetType, DataType, ErrorType>(
   target: TargetType,
   property: string,
-  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | ResultFAIL<ErrorType>>>
-): TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | ResultFAIL<ErrorType>>> {
+  descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | Err<ErrorType>>>
+): TypedPropertyDescriptor<(...args: any[]) => Promise<DataType | Err<ErrorType>>> {
   const self = descriptor.value;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  descriptor.value = async function (...args): Promise<DataType | ResultFAIL<any>> {
+  descriptor.value = async function(...args): Promise<DataType | Err<any>> {
     try {
       if (self instanceof Function) {
-        return self.call(this, ...args);
+        return self.apply(this, args);
       } else {
-        return fail(new TypeError('Descriptor value is not a function.'));
+        return err(new TypeError('Descriptor value is not a function.'));
       }
     } catch (error) {
-      return fail(error);
+      return err(error);
     }
   };
   return descriptor;

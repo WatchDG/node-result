@@ -2,9 +2,9 @@ import {
   tryCatch,
   tryCatchAsync,
   ok,
-  fail,
-  ResultOK,
-  ResultFAIL
+  err,
+  Ok,
+  Err
 } from '../src';
 import type {
   TResult,
@@ -24,49 +24,49 @@ class TryCatchTest {
 
   @tryCatch
   getFail(): TResult<string, Error> {
-    return fail(new Error('bar'));
+    return err(new Error('bar'));
   }
 
   @tryCatchAsync
   async getFailAsync(): TResultAsync<string, Error> {
-    return fail(new Error('bar'));
+    return err(new Error('bar'));
   }
-  
+
   @tryCatch
-  throwError(): TResult<string, Error>{
+  throwError(): TResult<string, Error> {
     throw new Error('bar');
   }
 
   @tryCatch
-  throwErrorAsync(): TResult<string, Error>{
+  throwErrorAsync(): TResult<string, Error> {
     throw new Error('bar');
   }
 }
 
-test('tryCatchWrapper with ResultOK', () => {
+test('tryCatchWrapper with Ok', () => {
   const user = new TryCatchTest();
   const result = user.getOk();
-  expect(result).toBeInstanceOf(ResultOK);
+  expect(result).toBeInstanceOf(Ok);
   expect(result.unwrap()).toBe('foo');
 });
 
-test('tryCatchWrapperAsync with ResultOK', async () => {
+test('tryCatchWrapperAsync with Ok', async () => {
   const user = new TryCatchTest();
   const result = await user.getOkAsync();
-  expect(result).toBeInstanceOf(ResultOK);
+  expect(result).toBeInstanceOf(Ok);
   expect(result.unwrap()).toBe('foo');
 });
 
-test('tryCatchWrapper with ResultFAIL', () => {
+test('tryCatchWrapper with Err', () => {
   const user = new TryCatchTest();
   const result = user.getFail();
-  expect(result).toBeInstanceOf(ResultFAIL);
+  expect(result).toBeInstanceOf(Err);
   expect(result.unwrap).toThrowError();
 });
 
-test('tryCatchWrapperAsync with ResultFAIL', async () => {
+test('tryCatchWrapperAsync with Err', async () => {
   const user = new TryCatchTest();
   const result = await user.getFailAsync();
-  expect(result).toBeInstanceOf(ResultFAIL);
+  expect(result).toBeInstanceOf(Err);
   expect(result.unwrap).toThrowError();
 });

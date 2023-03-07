@@ -1,32 +1,32 @@
-import { ResultFAIL, fail } from '../src';
+import { Err, err } from '../src';
 
-test('create new ResultFAIL', () => {
-  new ResultFAIL(void 0);
+test('create new Err', () => {
+  new Err(void 0);
 });
 
-test('check unwrap ResultFAIL', () => {
+test('check unwrap Err', () => {
   const error = new Error('foo');
-  expect(new ResultFAIL(error).unwrap).toThrowError();
+  expect(new Err(error).unwrap).toThrowError();
 });
 
-test('check unwrapAsync ResultFAIL', () => {
+test('check unwrapAsync Err', () => {
   const error = new Error('foo');
-  const result = new ResultFAIL(error).unwrapAsync();
+  const result = new Err(error).unwrapAsync();
   expect(result).rejects.toBe(error);
 });
 
 test('check isOk', () => {
   const error = new Error('foo');
-  const result = new ResultFAIL(error);
+  const result = new Err(error);
   expect(result.isOk()).toBeFalsy();
 });
 
-test('check isFail', () => {
+test('check isErr', () => {
   const error = new Error('foo');
-  const result = new ResultFAIL(error);
-  expect(result.isFail()).toBeTruthy();
+  const result = new Err(error);
+  expect(result.isErr()).toBeTruthy();
 });
 
 test('call fail', () => {
-  fail(void 0);
+  err(void 0);
 });

@@ -1,27 +1,27 @@
-import { ResultOK, ok } from '../src';
+import { Ok, ok } from '../src';
 
-test('create new ResultOK', () => {
-  new ResultOK(void 0);
+test('create new Ok', () => {
+  new Ok(void 0);
 });
 
-test('check unwrap ResultOK', ()=>{
-  const result = new ResultOK('foo').unwrap();
+test('check unwrap Ok', () => {
+  const result = new Ok('foo').unwrap();
   expect(result).toBe('foo');
 });
 
-test('check unwrapAsync ResultOK', ()=>{
-  const result = new ResultOK('foo').unwrapAsync();
+test('check unwrapAsync Ok', () => {
+  const result = new Ok('foo').unwrapAsync();
   expect(result).resolves.toBe('foo');
 });
 
 test('check isOk', () => {
-  const result = new ResultOK('foo');
+  const result = new Ok('foo');
   expect(result.isOk()).toBeTruthy();
 });
 
-test('check isFail', () => {
-  const result = new ResultOK('foo');
-  expect(result.isFail()).toBeFalsy();
+test('check isErr', () => {
+  const result = new Ok('foo');
+  expect(result.isErr()).toBeFalsy();
 });
 
 test('call ok', () => {
